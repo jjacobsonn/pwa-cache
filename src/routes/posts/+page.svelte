@@ -1,3 +1,34 @@
+<style>
+  /* General styling for the card */
+  .repo-card {
+    height: 250px; /* Set a fixed height for the cards */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+
+  /* Styling for the description container */
+  .repo-description {
+    max-height: 80px; /* Limit the visible height of the description */
+    overflow-y: auto; /* Enable vertical scrolling if content exceeds max height */
+  }
+
+  /* Styling for scrollable description */
+  .repo-description::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  .repo-description::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 5px;
+  }
+
+  .repo-description::-webkit-scrollbar-track {
+    background: #f0f0f0;
+  }
+</style>
+
 <script>
   import { onMount } from 'svelte';
 
@@ -79,9 +110,9 @@
     <!-- Repository Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {#each trendingRepos as repo (repo.url)}
-        <div class="p-4 bg-white shadow-md rounded-lg hover:shadow-lg transition border border-gray-200">
+        <div class="repo-card p-4 bg-white shadow-md rounded-lg hover:shadow-lg transition border border-gray-200">
           <h3 class="text-lg font-semibold text-gray-800 mb-2">{repo.name}</h3>
-          <p class="text-gray-600 mb-2">
+          <p class="repo-description text-gray-600 mb-2">
             {repo.description || 'No description available'}
           </p>
           <div class="text-sm text-gray-600 flex gap-2">
