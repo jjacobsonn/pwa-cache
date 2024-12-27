@@ -4,20 +4,34 @@
     <meta charset="utf-8" />
     <link rel="icon" href="%sveltekit.assets%/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="%sveltekit.assets%/manifest.json" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="description" content="pwa-cache: A Progressive Web App with offline caching." />
+
+    <!-- iOS PWA Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="pwa-cache" />
+    <link rel="apple-touch-icon" href="%sveltekit.assets%/icons/icon-192x192.png" />
+
     %sveltekit.head%
   </head>
   <body data-sveltekit-preload-data="hover">
     <div style="display: contents">%sveltekit.body%</div>
+
+    <!-- Register Service Worker -->
     <script>
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js', { scope: '/' })
-          .then((registration) => {
+        navigator.serviceWorker.register('/sw.js').then(
+          registration => {
             console.log('Service Worker registered:', registration);
-          })
-          .catch((error) => {
+          },
+          error => {
             console.error('Service Worker registration failed:', error);
-          });
+          }
+        );
       }
     </script>
   </body>
