@@ -61,7 +61,7 @@
         <div class="flex items-center gap-4">
           <span>⭐ {featuredRepo.stargazers_count} Stars</span>
           <span>🍴 {featuredRepo.forks_count} Forks</span>
-          <span>🛠️ {featuredRepo.language || 'Unknown Language'}</span>
+          <span>🛠️ {featuredRepo.language || 'Not Listed'}</span>
         </div>
         <a
           href="{featuredRepo.html_url}"
@@ -84,7 +84,7 @@
           <div class="text-sm text-gray-600 flex gap-2">
             <span>⭐ {repo.stargazers_count}</span>
             <span>🍴 {repo.forks_count}</span>
-            <span>🛠️ {repo.language || 'Unknown'}</span>
+            <span>🛠️ {repo.language || 'Not Listed'}</span>
           </div>
           <a
             href="{repo.html_url}"
