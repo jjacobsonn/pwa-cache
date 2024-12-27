@@ -1,34 +1,3 @@
-<style>
-  /* General styling for the card */
-  .repo-card {
-    height: 250px; /* Set a fixed height for the cards */
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    overflow: hidden;
-  }
-
-  /* Styling for the description container */
-  .repo-description {
-    max-height: 80px; /* Limit the visible height of the description */
-    overflow-y: auto; /* Enable vertical scrolling if content exceeds max height */
-  }
-
-  /* Styling for scrollable description */
-  .repo-description::-webkit-scrollbar {
-    width: 5px;
-  }
-
-  .repo-description::-webkit-scrollbar-thumb {
-    background: #ccc;
-    border-radius: 5px;
-  }
-
-  .repo-description::-webkit-scrollbar-track {
-    background: #f0f0f0;
-  }
-</style>
-
 <script>
   import { onMount } from 'svelte';
 
@@ -37,6 +6,46 @@
   let isLoading = true;
   let hasError = false;
 
+  const GITHUB_TOKEN = import.meta.env.VITE_GITHUB_TOKEN; // Use the token from .env
+  const headers = GITHUB_TOKEN ? { Authorization: `Bearer ${GITHUB_TOKEN}` } : {};
+
+  // Fetch additional repository details
+  async function fetchRepoDetails(repo) {
+    const details = {
+      openIssues: 0,
+      contributors: 0,
+    };
+
+    try {
+      const owner = repo.author;
+      const repoName = repo.name;
+
+      // Fetch open issues count
+      const issuesUrl = `https://api.github.com/repos/${owner}/${repoName}/issues`;
+      const issuesResponse = await fetch(issuesUrl, { headers });
+      if (issuesResponse.ok) {
+        const issues = await issuesResponse.json();
+        details.openIssues = issues.length;
+      } else {
+        console.error(`Failed to fetch issues for ${repo.name}`, issuesResponse.status);
+      }
+
+      // Fetch contributors count
+      const contributorsUrl = `https://api.github.com/repos/${owner}/${repoName}/contributors`;
+      const contributorsResponse = await fetch(contributorsUrl, { headers });
+      if (contributorsResponse.ok) {
+        const contributors = await contributorsResponse.json();
+        details.contributors = contributors.length;
+      } else {
+        console.error(`Failed to fetch contributors for ${repo.name}`, contributorsResponse.status);
+      }
+    } catch (error) {
+      console.error(`Error fetching details for ${repo.name}:`, error);
+    }
+
+    return details;
+  }
+
   // Fetch Trending Repositories
   async function fetchTrendingRepos() {
     try {
@@ -44,8 +53,13 @@
       if (!response.ok) throw new Error('Failed to fetch trending repositories');
       const data = await response.json();
 
-      // Store trending repositories
-      trendingRepos = data;
+      // Fetch additional details for each repository
+      trendingRepos = await Promise.all(
+        data.map(async (repo) => {
+          const details = await fetchRepoDetails(repo);
+          return { ...repo, ...details };
+        })
+      );
 
       // Randomly pick a featured repository
       const randomIndex = Math.floor(Math.random() * trendingRepos.length);
@@ -74,6 +88,34 @@
   onMount(fetchTrendingRepos);
 </script>
 
+<style>
+  .repo-card {
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+
+  .repo-description {
+    max-height: 60px;
+    overflow-y: auto;
+  }
+
+  .repo-description::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  .repo-description::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 5px;
+  }
+
+  .repo-description::-webkit-scrollbar-track {
+    background: #f0f0f0;
+  }
+</style>
+
 <main class="container mx-auto px-4 py-10">
   <h1 class="text-center text-4xl font-bold text-blue-800 my-8">Trending GitHub Repositories</h1>
   <p class="text-center text-lg text-blue-700 mb-6">
@@ -96,6 +138,8 @@
           <span>⭐ {featuredRepo.stars} Stars</span>
           <span>🍴 {featuredRepo.forks} Forks</span>
           <span>🛠️ {featuredRepo.language || 'Not Listed'}</span>
+          <span>📋 {featuredRepo.openIssues} Open Issues</span>
+          <span>🤝 {featuredRepo.contributors} Contributors</span>
         </div>
         <a
           href="{featuredRepo.url}"
@@ -119,6 +163,8 @@
             <span>⭐ {repo.stars}</span>
             <span>🍴 {repo.forks}</span>
             <span>🛠️ {repo.language || 'Not Listed'}</span>
+            <span>📋 {repo.openIssues} Issues</span>
+            <span>🤝 {repo.contributors} Contributors</span>
           </div>
           <a
             href="{repo.url}"

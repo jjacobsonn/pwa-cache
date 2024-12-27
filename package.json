@@ -41,6 +41,7 @@
 	"dependencies": {
 		"@tailwindcss/forms": "^0.5.9",
 		"@tailwindcss/typography": "^0.5.15",
+		"dotenv": "^16.4.7",
 		"workbox-expiration": "^7.3.0",
 		"workbox-precaching": "^7.3.0",
 		"workbox-routing": "^7.3.0",
