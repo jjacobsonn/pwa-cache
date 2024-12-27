@@ -6,8 +6,12 @@ export default {
   content: ['./src/**/*.{html,js,svelte,ts}'],
   theme: {
     extend: {
+      container: {
+        center: true,
+        padding: '1rem',
+      },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'], // Add Inter font
+        sans: ['Inter', 'sans-serif'],
       },
     },
   },

@@ -13,12 +13,6 @@
       } catch (error) {
         console.error('Fetch Error:', error);
         hasError = true;
-  
-        // Offline fallback
-        if (!navigator.onLine) {
-          console.log('You are offline. Loading fallback data...');
-          posts = [{ title: 'Cached Post 1' }, { title: 'Cached Post 2' }]; // Example fallback data
-        }
       } finally {
         isLoading = false;
       }
@@ -27,23 +21,31 @@
     onMount(fetchPosts);
   </script>
   
-  <main>
-    <h1>Posts</h1>
+  <main class="container mx-auto px-4">
+    <h1 class="text-center text-4xl font-bold text-gray-800 my-8">Posts</h1>
+    <p class="text-center text-lg text-gray-600 mb-6">
+      This page demonstrates the power of Progressive Web Apps (PWA) by dynamically fetching and caching 
+      posts from an external API. Even offline, previously viewed posts remain accessible.
+    </p>
   
     {#if isLoading}
-      <p>Loading...</p>
+      <p class="text-center text-gray-600">Loading...</p>
     {:else if hasError}
-      <p>Failed to load posts. Please try again later.</p>
+      <p class="text-center text-red-500">Failed to load posts. Please try again later.</p>
     {:else}
-      <ul>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {#each posts as post}
-          <li>{post.title}</li>
+          <div class="p-4 bg-gray-100 shadow-md rounded-lg hover:shadow-lg transition border border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-800 mb-2">{post.title}</h2>
+            <p class="text-gray-600">{post.body}</p>
+          </div>
         {/each}
-      </ul>
+      </div>
     {/if}
   </main>
   
   <style>
+
     h1 {
       color: #4f46e5;
     }
