@@ -13,11 +13,12 @@
       if (!response.ok) throw new Error('Failed to fetch trending repositories');
       const data = await response.json();
 
-      // Sort by stars (optional, as the API is already sorted)
-      trendingRepos = data.sort((a, b) => b.stars - a.stars);
+      // Store trending repositories
+      trendingRepos = data;
 
-      // Highlight the top trending repository
-      featuredRepo = trendingRepos[0];
+      // Randomly pick a featured repository
+      const randomIndex = Math.floor(Math.random() * trendingRepos.length);
+      featuredRepo = trendingRepos[randomIndex];
     } catch (error) {
       console.error('Fetch Error:', error);
 
@@ -26,8 +27,11 @@
       const cachedResponse = await cache.match('https://github-trending-api.de.a9sapp.eu/repositories');
       if (cachedResponse) {
         const cachedData = await cachedResponse.json();
-        trendingRepos = cachedData.sort((a, b) => b.stars - a.stars);
-        featuredRepo = trendingRepos[0];
+        trendingRepos = cachedData;
+
+        // Randomly pick a featured repository from cached data
+        const randomIndex = Math.floor(Math.random() * trendingRepos.length);
+        featuredRepo = trendingRepos[randomIndex];
       } else {
         hasError = true;
       }
