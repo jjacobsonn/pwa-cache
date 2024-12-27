@@ -6,10 +6,10 @@ generateSW({
   swDest: "static/sw.js",
   runtimeCaching: [
     {
-      urlPattern: /^https:\/\/api\.github\.com\/users\/octocat\/repos/,
+      urlPattern: /^https:\/\/github-trending-api\.de\.a9sapp\.eu\/repositories/,
       handler: "StaleWhileRevalidate",
       options: {
-        cacheName: "github-api-cache",
+        cacheName: "trending-repos-cache",
         expiration: {
           maxEntries: 50,
           maxAgeSeconds: 24 * 60 * 60, // Cache for 1 day
