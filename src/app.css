@@ -1,0 +1,21 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+body {
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+  color: #333;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600; /* Semi-bold for headings */
+  margin: 0;
+}
+
+p, a, span, li {
+  font-weight: 400; /* Regular for general text */
+  margin: 0;
+}
