@@ -106,6 +106,7 @@
 </script>
 
 <style>
+  /* Base body styling */
   body {
     font-family: 'Inter', sans-serif;
     background-color: #f3f4f6;
@@ -114,12 +115,14 @@
     padding: 0;
   }
 
+  /* Container styles */
   .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
   }
 
+  /* Repository card styles */
   .repo-card {
     background: linear-gradient(145deg, #ffffff, #f3f4f6);
     border-radius: 16px;
@@ -129,6 +132,7 @@
     flex-direction: column;
     transition: all 0.3s ease;
     position: relative;
+    padding-bottom: 70px; /* Ensure space for button */
   }
 
   .repo-card:hover {
@@ -147,7 +151,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: auto;
+    flex: 1;
   }
 
   .repo-title {
@@ -155,17 +159,14 @@
     font-weight: bold;
     color: #111827;
     margin-bottom: 10px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    text-align: center;
   }
 
   .repo-description {
     font-size: 14px;
     color: #4b5563;
     margin-bottom: 16px;
-    height: auto; /* Dynamically adjust height */
-    max-height: 60px; /* Limit excessive height */
+    max-height: 80px;
     overflow-y: auto;
   }
 
@@ -181,38 +182,41 @@
   .repo-stats {
     display: flex;
     justify-content: space-around;
-    flex-wrap: wrap;
     font-size: 13px;
     color: #4b5563;
   }
 
-  .repo-stats span {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    white-space: nowrap;
-  }
-
+  /* Button styling for "View Repository" */
   .view-repo {
-    margin-top: 12px;
+    position: absolute;
+    bottom: 20px; /* Centered spacing above the bottom */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%);
     text-align: center;
     font-size: 14px;
     font-weight: bold;
-    color: #3b82f6;
+    color: white;
     text-decoration: none;
-    transition: color 0.2s ease-in-out;
+    background-color: #3b82f6; /* Button background */
+    padding: 10px 20px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease-in-out, transform 0.2s;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   }
 
   .view-repo:hover {
-    color: #2563eb;
+    background-color: #2563eb;
+    transform: translate(-50%, -2px); /* Slight lift on hover */
   }
 
+  /* Grid display for repositories */
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 24px;
   }
 
+  /* Heading styles */
   h1 {
     text-align: center;
     font-size: 36px;
@@ -221,11 +225,17 @@
     margin-bottom: 24px;
   }
 
+  /* Light mode styling for paragraph */
   p {
     text-align: center;
     font-size: 16px;
     color: #1e40af;
     margin-bottom: 40px;
+  }
+
+  /* Dark mode styling for specific paragraph */
+  :root.dark p:not(.repo-description) {
+    color: #ffffff;
   }
 </style>
 
@@ -254,8 +264,8 @@
               <span>📋 {repo.openIssues} Issues</span>
               <span>🤝 {repo.contributors} Contributors</span>
             </div>
-            <a href="{repo.url}" target="_blank" class="view-repo">View Repository</a>
           </div>
+          <a href="{repo.url}" target="_blank" class="view-repo">View Repository</a>
         </div>
       {/each}
     </div>
