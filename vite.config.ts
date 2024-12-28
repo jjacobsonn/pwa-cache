@@ -1,5 +1,6 @@
 import { defineConfig } from 'vitest/config';
 import { sveltekit } from '@sveltejs/kit/vite';
+import dotenv from 'dotenv';
 
 export default defineConfig({
 	plugins: [sveltekit()],

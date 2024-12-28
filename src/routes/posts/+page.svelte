@@ -10,17 +10,30 @@
   const GITHUB_TOKEN = import.meta.env.VITE_GITHUB_TOKEN; // Load token from .env
   const headers = GITHUB_TOKEN ? { Authorization: `Bearer ${GITHUB_TOKEN}` } : {};
 
+  // Helper: Retry wrapper for fetch
+  async function fetchWithRetry(url, options, retries = 3, delay = 500) {
+    for (let i = 0; i < retries; i++) {
+      try {
+        const response = await fetch(url, options);
+        if (!response.ok) {
+          console.warn(`Request failed with status ${response.status}: Retrying...`);
+          await new Promise((resolve) => setTimeout(resolve, delay));
+          continue;
+        }
+        return await response.json();
+      } catch (error) {
+        console.error(`Error fetching ${url}:`, error);
+        if (i === retries - 1) throw error;
+      }
+    }
+  }
+
   // Check rate limit
   async function checkRateLimit() {
     try {
-      const response = await fetch('https://api.github.com/rate_limit', { headers });
-      if (response.ok) {
-        const data = await response.json();
-        rateLimitRemaining = data.rate.remaining;
-        console.log(`Rate limit remaining: ${rateLimitRemaining}`);
-      } else {
-        console.error(`Failed to check rate limit: ${response.status}`);
-      }
+      const data = await fetchWithRetry('https://api.github.com/rate_limit', { headers });
+      rateLimitRemaining = data.rate.remaining;
+      console.log(`Rate limit remaining: ${rateLimitRemaining}`);
     } catch (error) {
       console.error('Error checking rate limit:', error);
     }
@@ -39,23 +52,13 @@
 
       // Fetch repo details for open issues
       const repoUrl = `https://api.github.com/repos/${owner}/${repoName}`;
-      const repoResponse = await fetch(repoUrl, { headers });
-      if (repoResponse.ok) {
-        const repoData = await repoResponse.json();
-        details.openIssues = repoData.open_issues_count;
-      } else {
-        console.error(`Failed to fetch repo details for ${repo.name}: ${repoResponse.status}`);
-      }
+      const repoData = await fetchWithRetry(repoUrl, { headers });
+      details.openIssues = repoData?.open_issues_count || 0;
 
-      // Fetch contributors (with pagination)
+      // Fetch contributors
       const contributorsUrl = `https://api.github.com/repos/${owner}/${repoName}/contributors?per_page=10`;
-      const contributorsResponse = await fetch(contributorsUrl, { headers });
-      if (contributorsResponse.ok) {
-        const contributorsData = await contributorsResponse.json();
-        details.contributors = contributorsData.length;
-      } else {
-        console.error(`Failed to fetch contributors for ${repo.name}: ${contributorsResponse.status}`);
-      }
+      const contributorsData = await fetchWithRetry(contributorsUrl, { headers });
+      details.contributors = contributorsData?.length || 0;
     } catch (error) {
       console.error(`Error fetching details for ${repo.name}:`, error);
     }
@@ -66,7 +69,6 @@
   // Fetch trending repositories
   async function fetchTrendingRepos() {
     try {
-      // Check rate limit before fetching
       await checkRateLimit();
 
       if (rateLimitRemaining === 0) {
@@ -75,16 +77,18 @@
         return;
       }
 
-      const response = await fetch('https://github-trending-api.de.a9sapp.eu/repositories');
-      if (!response.ok) throw new Error('Failed to fetch trending repositories');
-      const data = await response.json();
-
-      // Fetch additional details with a slight delay between requests
+      const data = await fetchWithRetry('https://github-trending-api.de.a9sapp.eu/repositories');
       trendingRepos = [];
+
       for (const repo of data) {
-        const details = await fetchRepoDetails(repo);
-        trendingRepos.push({ ...repo, ...details });
-        await new Promise((resolve) => setTimeout(resolve, 300)); // Delay of 300ms
+        if (rateLimitRemaining > 0) {
+          const details = await fetchRepoDetails(repo);
+          trendingRepos.push({ ...repo, ...details });
+          await new Promise((resolve) => setTimeout(resolve, rateLimitRemaining > 10 ? 300 : 1000)); // Adjust delay
+        } else {
+          console.warn('Rate limit reached during repository details fetch.');
+          trendingRepos.push(repo); // Fallback to base data
+        }
       }
 
       // Randomly pick a featured repository
@@ -101,12 +105,11 @@
   onMount(fetchTrendingRepos);
 </script>
 
-
 <style>
   body {
     font-family: 'Inter', sans-serif;
-    background-color: #f8fafc;
-    color: #334155;
+    background-color: #f3f4f6;
+    color: #1f2937;
     margin: 0;
     padding: 0;
   }
@@ -118,24 +121,24 @@
   }
 
   .repo-card {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    background: linear-gradient(145deg, #ffffff, #f3f4f6);
+    border-radius: 16px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1), -4px -4px 10px rgba(255, 255, 255, 0.9);
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    transition: all 0.2s ease-in-out;
+    transition: all 0.3s ease;
+    position: relative;
   }
 
   .repo-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    transform: translateY(-5px);
+    box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.15), -6px -6px 12px rgba(255, 255, 255, 0.8);
   }
 
   .repo-avatar {
     width: 100%;
-    height: 160px;
+    height: 180px;
     object-fit: cover;
   }
 
@@ -144,24 +147,25 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 100%;
+    height: auto;
   }
 
   .repo-title {
     font-size: 18px;
-    font-weight: 600;
-    color: #1e293b;
-    margin: 0 0 12px;
-    text-overflow: ellipsis;
+    font-weight: bold;
+    color: #111827;
+    margin-bottom: 10px;
     white-space: nowrap;
     overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .repo-description {
     font-size: 14px;
-    color: #475569;
+    color: #4b5563;
     margin-bottom: 16px;
-    max-height: 60px;
+    height: auto; /* Dynamically adjust height */
+    max-height: 60px; /* Limit excessive height */
     overflow-y: auto;
   }
 
@@ -170,19 +174,16 @@
   }
 
   .repo-description::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 5px;
+    background: #d1d5db;
+    border-radius: 10px;
   }
 
   .repo-stats {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: space-around;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-top: auto;
     font-size: 13px;
-    color: #475569;
+    color: #4b5563;
   }
 
   .repo-stats span {
@@ -193,36 +194,37 @@
   }
 
   .view-repo {
-    margin-top: 16px;
+    margin-top: 12px;
     text-align: center;
     font-size: 14px;
     font-weight: bold;
-    color: #2563eb;
+    color: #3b82f6;
     text-decoration: none;
+    transition: color 0.2s ease-in-out;
   }
 
   .view-repo:hover {
-    text-decoration: underline;
+    color: #2563eb;
   }
 
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
   }
 
   h1 {
     text-align: center;
-    font-size: 32px;
+    font-size: 36px;
     font-weight: bold;
     color: #1d4ed8;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
   }
 
   p {
     text-align: center;
     font-size: 16px;
-    color: #2563eb;
+    color: #1e40af;
     margin-bottom: 40px;
   }
 </style>
