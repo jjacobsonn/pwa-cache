@@ -6,13 +6,13 @@
   --bg-color: #f3f4f6;
   --text-color: #1f2937;
   --nav-bg: #ffffff;
-  --nav-link: #4f46e5;
+  --nav-link: #2563eb;
   --border-color: #ddd;
   --toggle-bg: #e5e7eb; /* Light gray for light mode */
-  --toggle-border: #4f46e5; /* Distinct border for light mode */
-  --toggle-dark-bg: #4f46e5; /* Highlight color for dark mode */
+  --toggle-border: #2563eb; /* Distinct border for light mode */
+  --toggle-dark-bg: #2563eb; /* Highlight color for dark mode */
   --toggle-dark-border: #f59e0b; /* Match border with slightly darker sun color in dark mode */
-  --moon-color: #4f46e5; /* Dark blue moon icon */
+  --moon-color: #2563eb; /* Dark blue moon icon */
   --sun-color: #facc15; /* Bright yellow sun icon */
   --darker-sun-color: #FFFFFF; /* Slightly darker yellow for sun icon */
 }
