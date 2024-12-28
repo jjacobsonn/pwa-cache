@@ -2,6 +2,30 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+:root {
+  --bg-color: #f3f4f6;
+  --text-color: #1f2937;
+  --nav-bg: #ffffff;
+  --nav-link: #4f46e5;
+  --border-color: #ddd;
+}
+
+.dark {
+  --bg-color: #1f2937;
+  --text-color: #f3f4f6;
+  --nav-bg: #111827;
+  --nav-link: #ffffff;
+  --border-color: #333;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   font-family: 'Inter', sans-serif;
   margin: 0;
