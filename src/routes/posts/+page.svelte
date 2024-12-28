@@ -10,20 +10,34 @@
   const GITHUB_TOKEN = import.meta.env.VITE_GITHUB_TOKEN; // Load token from .env
   const headers = GITHUB_TOKEN ? { Authorization: `Bearer ${GITHUB_TOKEN}` } : {};
 
-  // Helper: Retry wrapper for fetch
+  // Helper: Retry wrapper for fetch with caching
   async function fetchWithRetry(url, options, retries = 3, delay = 500) {
     for (let i = 0; i < retries; i++) {
       try {
         const response = await fetch(url, options);
         if (!response.ok) {
-          console.warn(`Request failed with status ${response.status}: Retrying...`);
-          await new Promise((resolve) => setTimeout(resolve, delay));
-          continue;
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
+
+        // Clone the response and cache it for offline use
+        const clone = response.clone();
+        const cache = await caches.open('trending-repos-cache');
+        cache.put(url, clone);
+
         return await response.json();
       } catch (error) {
-        console.error(`Error fetching ${url}:`, error);
-        if (i === retries - 1) throw error;
+        console.warn(`Fetch error: ${error}. Retries left: ${retries - i - 1}`);
+        if (i === retries - 1) {
+          // Fallback to cache if offline
+          const cache = await caches.open('trending-repos-cache');
+          const cachedResponse = await cache.match(url);
+          if (cachedResponse) {
+            return await cachedResponse.json();
+          } else {
+            throw new Error('No cached data available.');
+          }
+        }
+        await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }
   }
@@ -253,7 +267,11 @@
     <div class="grid">
       {#each trendingRepos as repo (repo.url)}
         <div class="repo-card">
-          <img src="{repo.avatar}" alt="{repo.name} Avatar" class="repo-avatar" />
+          <img
+            src="{repo.avatar || '/static/placeholder.png'}"
+            alt="{repo.name} Avatar"
+            class="repo-avatar"
+          />
           <div class="repo-details">
             <h3 class="repo-title">{repo.name}</h3>
             <p class="repo-description">{repo.description || 'No description available'}</p>
