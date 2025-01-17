@@ -30,7 +30,7 @@
 <style>
     /* Centered, High-Quality Layout */
     .welcome-message {
-        max-width: 1100px;
+        max-width: 100%; /* Stretch to match grid width */
         margin: 4rem auto;
         padding: 3rem;
         background: linear-gradient(135deg, #1e293b 0%, #3b82f6 100%);
@@ -44,12 +44,13 @@
         transition: all 0.3s ease-in-out;
     }
 
-    /* Content Split for a Professional Layout */
+    /* Content Split for Professional Layout */
     .content-container {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        width: 100%;
+        width: 100%; /* Full width for consistency */
+        max-width: 1200px; /* Matches grid's max-width */
         gap: 2.5rem;
     }
 
@@ -77,8 +78,8 @@
         justify-content: center;
         text-align: center;
         backdrop-filter: blur(10px);
-        width: 180px; /* Increased width */
-        height: 180px; /* Increased height */
+        width: 220px; /* Increased width to align visually with grid items */
+        height: 220px; /* Increased height for proportion */
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
     }
@@ -141,8 +142,8 @@
         }
 
         .glass-card {
-            width: 150px;
-            height: 150px;
+            width: 180px; /* Match smaller screens */
+            height: 180px;
         }
 
         .glass-card i {
