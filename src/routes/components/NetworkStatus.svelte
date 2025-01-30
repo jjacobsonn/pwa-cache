@@ -35,7 +35,7 @@
       font-weight: 600;
       border-radius: 12px;
       padding: 6px 14px;
-      height: 32px; /* Match dark mode toggle height */
+      height: 27px;
       color: white;
       background: green;
       transition: background 0.3s ease-in-out;
