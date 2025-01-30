@@ -30,19 +30,20 @@
         justify-content: center;
         align-items: center;
         width: 100%;
-        max-width: 500px;
-        background-color: #2253bd;
-        color: white;
+        max-width: 550px;
+        background-color: white; /* White card for contrast */
+        color: #2253bd;
         border-radius: 16px;
-        padding: 20px;
-        margin: 20px auto;
-        box-shadow: 0px 15px 40px rgba(0, 0, 0, 0.2);
+        padding: 24px;
+        margin: 40px auto 60px; /* Added bottom margin */
+        box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.15);
+        border: 2px solid #2253bd;
     }
 
     .toggle-content {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 14px;
         font-size: 18px;
         font-weight: 600;
     }
@@ -51,7 +52,7 @@
         position: relative;
         display: inline-block;
         width: 70px;
-        height: 34px;
+        height: 36px;
     }
 
     .offline-switch input {
@@ -67,7 +68,7 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: white;
+        background-color: #ddd;
         transition: 0.4s;
         border-radius: 34px;
     }
@@ -75,8 +76,8 @@
     .slider:before {
         position: absolute;
         content: "";
-        height: 26px;
-        width: 26px;
+        height: 28px;
+        width: 28px;
         left: 4px;
         bottom: 4px;
         background-color: #2253bd;
@@ -89,7 +90,7 @@
     }
 
     input:checked + .slider:before {
-        transform: translateX(36px);
+        transform: translateX(34px);
         background-color: #ccc;
     }
 
@@ -100,7 +101,7 @@
     @media (max-width: 768px) {
         .offline-toggle-container {
             max-width: 400px;
-            padding: 15px;
+            padding: 18px;
         }
         
         .toggle-content {
@@ -111,7 +112,7 @@
     @media (max-width: 480px) {
         .offline-toggle-container {
             max-width: 300px;
-            padding: 12px;
+            padding: 15px;
         }
 
         .toggle-content {
