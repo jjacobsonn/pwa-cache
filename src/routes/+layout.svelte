@@ -2,7 +2,8 @@
 	import { onMount } from 'svelte';
 	import "../app.css";
 	import { darkMode } from "../lib/stores";
-	import NetworkStatus from './components/NetworkStatus.svelte';
+	import NetworkStatus from '$lib/components/NetworkStatus.svelte';
+	import OnlineStatusToggle from '$lib/components/OnlineStatusToggle.svelte';
   
 	let isDarkMode = false;
   
@@ -37,6 +38,7 @@
 	<!-- ✅ Wrap in nav-right to ensure alignment -->
 	<div class="nav-right">
 	  <NetworkStatus />
+	  <OnlineStatusToggle />
 	  <button 
 		class="toggle-container"
 		aria-label="Toggle dark mode"
