@@ -1,12 +1,14 @@
 <script>
   import TrendingRepos from '../components/TrendingRepos.svelte';
   import WelcomeMessage from '$lib/components/WelcomeMessage.svelte';
+  import OfflineToggle from '$lib/components/OfflineToggle.svelte';
 </script>
   
 
 <main class="container">
   <h1>Trending GitHub Repositories</h1>
   <WelcomeMessage />
+  <OfflineToggle />
   <TrendingRepos />
 </main>
 

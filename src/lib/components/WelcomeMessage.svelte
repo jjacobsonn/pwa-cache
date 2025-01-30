@@ -28,9 +28,8 @@
 </section>
 
 <style>
-    /* Centered, High-Quality Layout */
     .welcome-message {
-        max-width: 100%; /* Stretch to match grid width */
+        max-width: 100%;
         margin: 4rem auto;
         padding: 3rem;
         background: linear-gradient(135deg, #1e293b 0%, #3b82f6 100%);
@@ -44,13 +43,12 @@
         transition: all 0.3s ease-in-out;
     }
 
-    /* Content Split for Professional Layout */
     .content-container {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        width: 100%; /* Full width for consistency */
-        max-width: 1200px; /* Matches grid's max-width */
+        width: 100%;
+        max-width: 1200px;
         gap: 2.5rem;
     }
 
@@ -66,10 +64,9 @@
         justify-content: center;
     }
 
-    /* Glass Cards - Enlarged */
     .glass-card {
         background: white;
-        color: #2253bd; /* Matches the previous background color */
+        color: #2253bd;
         border-radius: 14px;
         padding: 2rem;
         display: flex;
@@ -78,8 +75,8 @@
         justify-content: center;
         text-align: center;
         backdrop-filter: blur(10px);
-        width: 220px; /* Increased width to align visually with grid items */
-        height: 220px; /* Increased height for proportion */
+        width: 220px;
+        height: 220px;
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
     }
@@ -90,38 +87,35 @@
     }
 
     .glass-card i {
-        font-size: 3rem; /* Increased size */
+        font-size: 3rem;
         color: #3b82f6;
         margin-bottom: 0.8rem;
     }
 
     .glass-card p {
-        font-size: 1.2rem; /* Larger font */
+        font-size: 1.2rem;
         font-weight: 700;
     }
 
-    /* Heading */
     .title {
-        font-size: 2.6rem; /* Slightly larger */
+        font-size: 2.6rem;
         font-weight: 700;
-        color: #ffffff; /* Primary Heading Color */
+        color: #ffffff;
         margin-bottom: 1.2rem;
     }
 
-    /* Text Content (Updated Colors for Balance) */
     .description {
         font-size: 1.3rem;
         font-weight: 500;
-        color: #ffffff; /* Matches title color */
+        color: #ffffff;
         margin-bottom: 0.5rem;
     }
 
     .sub-description {
         font-size: 1.1rem;
-        color: #e0f2fe; /* Lighter for balance */
+        color: #e0f2fe;
     }
 
-    /* Responsive Adjustments */
     @media (max-width: 768px) {
         .content-container {
             flex-direction: column;
@@ -142,7 +136,7 @@
         }
 
         .glass-card {
-            width: 180px; /* Match smaller screens */
+            width: 180px;
             height: 180px;
         }
 
