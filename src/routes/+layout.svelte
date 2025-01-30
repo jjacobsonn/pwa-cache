@@ -85,8 +85,9 @@
 
     .nav-links {
         display: flex;
-        align-items: center; /* ✅ Ensure vertical alignment */
+        align-items: center;
         gap: 1rem;
+        padding-left: 1.7rem;
     }
 
     .nav-links a {
