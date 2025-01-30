@@ -1,12 +1,10 @@
 <script>
   import TrendingRepos from '../components/TrendingRepos.svelte';
   import WelcomeMessage from '$lib/components/WelcomeMessage.svelte';
-  import NetworkStatus from '../components/NetworkStatus.svelte';
 </script>
   
 
 <main class="container">
-  <NetworkStatus />
   <h1>Trending GitHub Repositories</h1>
   <WelcomeMessage />
   <TrendingRepos />

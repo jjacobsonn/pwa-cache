@@ -28,19 +28,16 @@
   
   <style>
     .status-badge {
-      position: fixed;
-      top: 12px;
-      right: 12px;
-      padding: 6px 12px;
-      font-size: 14px;
-      font-weight: 600;
-      border-radius: 15px;
-      color: white;
-      background: green;
       display: flex;
       align-items: center;
       gap: 6px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 12px;
+      padding: 6px 14px;
+      height: 32px; /* Match dark mode toggle height */
+      color: white;
+      background: green;
       transition: background 0.3s ease-in-out;
     }
   
@@ -49,10 +46,26 @@
     }
   
     .dot {
-      width: 10px;
-      height: 10px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       background: white;
+    }
+  
+    @media (max-width: 768px) {
+      .status-badge {
+        font-size: 12px;
+        padding: 5px 12px;
+        height: 30px;
+      }
+    }
+  
+    @media (max-width: 480px) {
+      .status-badge {
+        font-size: 10px;
+        padding: 4px 10px;
+        height: 28px;
+      }
     }
   </style>
   
