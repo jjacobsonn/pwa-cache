@@ -1,17 +1,51 @@
 <script>
     import { writable } from 'svelte/store';
+    import { onMount } from 'svelte';
 
-    // ✅ Online/Offline Mode Store
+    // Store for tracking offline mode
     export const offlineMode = writable(false);
-    let isOfflineMode = false;
 
-    // Subscribe to store
-    $: offlineMode.subscribe((value) => {
-        isOfflineMode = value;
+    let swRegistration = null;
+
+    // ✅ Register Service Worker on Mount
+    onMount(async () => {
+        offlineMode.set(!navigator.onLine);
+
+        // Listen for real network status changes
+        window.addEventListener('online', () => offlineMode.set(false));
+        window.addEventListener('offline', () => offlineMode.set(true));
+
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            swRegistration = await navigator.serviceWorker.register('/sw.js');
+        }
     });
 
-    function toggleOfflineMode() {
-        offlineMode.update((mode) => !mode);
+    // ✅ Function to toggle network mode
+    async function toggleOfflineMode() {
+        offlineMode.update(async (mode) => {
+            const newMode = !mode;
+            
+            if (newMode) {
+                console.log("🚨 Disabling network (Offline Mode)");
+                // Activate Service Worker to simulate offline
+                if (swRegistration && swRegistration.active) {
+                    await swRegistration.active.postMessage({ type: "GO_OFFLINE" });
+                }
+                navigator.__defineGetter__("onLine", () => false);
+                window.dispatchEvent(new Event('offline'));
+            } else {
+                console.log("✅ Enabling network (Online Mode)");
+                // Disable offline mode
+                if (swRegistration && swRegistration.active) {
+                    await swRegistration.active.postMessage({ type: "GO_ONLINE" });
+                }
+                navigator.__defineGetter__("onLine", () => true);
+                window.dispatchEvent(new Event('online'));
+            }
+
+            return newMode;
+        });
     }
 </script>
 
@@ -20,10 +54,10 @@
     class="toggle-container"
     aria-label="Toggle Offline Mode"
     on:click={toggleOfflineMode}
-    title={isOfflineMode ? "Offline Mode" : "Online Mode"}>
+    title={$offlineMode ? "Offline Mode" : "Online Mode"}>
 
-    <div class="toggle-switch {isOfflineMode ? 'offline' : ''}">
-        {#if isOfflineMode}
+    <div class="toggle-switch {$offlineMode ? 'offline' : ''}">
+        {#if $offlineMode}
             <!-- 🚫 Offline Icon (Crossed-out Wi-Fi) -->
             <svg class="icon wifi-off-icon" viewBox="0 0 24 24">
                 <path d="M5 12q2-2 7-2t7 2M8 16q2-1 4-1t4 1M12 20h0.01M2 2l20 20" 
@@ -52,8 +86,8 @@
 
     .toggle-switch {
         position: relative;
-        width: 32px; /* ✅ Reduced from 40px */
-        height: 32px; /* ✅ Reduced from 40px */
+        width: 32px;
+        height: 32px;
         border-radius: 50%;
         background-color: white;
         display: flex;
@@ -70,7 +104,7 @@
     }
 
     .icon {
-        width: 20px; /* ✅ Adjusted for smaller button */
+        width: 20px;
         height: 20px;
         transition: transform 0.2s ease-in-out;
     }

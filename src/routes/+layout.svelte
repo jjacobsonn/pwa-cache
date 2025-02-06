@@ -85,7 +85,7 @@
 
     .nav-links {
         display: flex;
-        align-items: center;
+        align-items: center; /* ✅ Ensure vertical alignment */
         gap: 1rem;
         padding-left: 1.7rem;
     }

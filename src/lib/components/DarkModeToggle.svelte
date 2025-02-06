@@ -2,7 +2,7 @@
     import { onMount } from 'svelte';
     import "../app.css";
     import { darkMode } from "$lib/stores"; // ✅ Use SvelteKit's `$lib` alias
-    import NetworkStatus from "./components/NetworkStatus.svelte"; // ✅ Adjusted path
+    import NetworkStatus from "$lib/components/NetworkStatus.svelte"; // ✅ Adjusted path
     import DarkModeToggle from "$lib/components/DarkModeToggle.svelte"; // ✅ Corrected path
 
     let isDarkMode = false;
